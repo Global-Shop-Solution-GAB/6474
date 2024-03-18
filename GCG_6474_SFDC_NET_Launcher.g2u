@@ -1,0 +1,40 @@
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Sub_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+v.Local.iRet.Declare(Long)
+
+'coded by DD 8/26/2021, this script just launches the menu items for WIP to FG and Quality Rej/Disp from Main SFDC.NET Script 1 and 3
+'for Bruckman Rubber quote 13063
+
+f.Intrinsic.Control.If(v.Caller.Hook,=,49760)
+	'launch wip to fg from script 1
+	f.Intrinsic.Task.LaunchGSSAsync("JB0052GI","","",v.Local.iRet)	
+f.Intrinsic.Control.ElseIf(v.Caller.Hook,=,49762)
+	'launch quality from script 3
+	f.Intrinsic.Task.LaunchGSSAsync("JB0027","","",v.Local.iRet)
+f.Intrinsic.Control.ElseIf(v.Caller.Hook,=,49710)
+	'rename script 1 and 3
+	f.Intrinsic.String.Replace(v.Passed.MainFormView-windowsUIButtonPanel-1,"Script 1","WIPtoFG",v.Passed.MainFormView-windowsUIButtonPanel-1)
+	f.Intrinsic.String.Replace(v.Passed.MainFormView-windowsUIButtonPanel-1,"Script 3","Rej/Disp",v.Passed.MainFormView-windowsUIButtonPanel-1)
+f.Intrinsic.Control.Else
+	'else end
+	f.Intrinsic.Control.End	
+f.Intrinsic.Control.EndIf
+
+'end
+f.Intrinsic.Control.End
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Sub_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_6474_SFDC_NET_LAUNCHER.g2u",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+Program.Sub.Main.End
